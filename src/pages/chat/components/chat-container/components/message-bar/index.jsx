@@ -79,7 +79,6 @@ const MessageBar = () => {
         },
       );
       setIsUploading(false)
-      console.log("consoleing fileulr", response.data.filePath,typeof(response.data.filePath))
       if (response.status === 200 && response.data) {
         if(selectedChatType === "contact"){
          socket.emit("sendMessage", {
@@ -107,11 +106,11 @@ const MessageBar = () => {
     }
   }
   return (
-    <div className="h-[10vh]   bg-[#1c1d25] flex justify-center items-center px-8 mb-6 gap-6 ">
-      <div className="flex-1 flex bg-[#2a2b33] rounded-md items-center gap-5 pr-5 ">
+    <div className="h-[10vh]   bg-[#5e68af] flex justify-center items-center px-8 mb-6 gap-6 ">
+      <div className="flex-1 flex bg-[#2a2b33] rounded-md items-center sm:gap-5 gap-2 pr-5 ">
         <input
           type="text" 
-          className="flex-1 p-5 bg-transparent rounded-md focus:border-none focus:outline-none"
+          className="flex-1 sm:p-5 p-3 pl-1 bg-transparent rounded-md focus:border-none focus:outline-none"
           placeholder="Enter Message"
           value={message}
           onChange={e => setMessage(e.target.value)}
@@ -146,7 +145,7 @@ const MessageBar = () => {
         </div>
       </div>
       <button 
-        className="bg-[#8417ff] items-center rounded-md justify-center p-5 focus:border-none focus:outline-none hover:bg-[#741bda] focus:text-white focus:bg-[#741bda] durarion-300 transition-all "
+        className="bg-[#8417ff] items-center rounded-md justify-center sm:p-5 p-3 pr-1 focus:border-none focus:outline-none hover:bg-[#741bda] focus:text-white focus:bg-[#741bda] durarion-300 transition-all "
         onClick={handleSendMessage}
         
       >
