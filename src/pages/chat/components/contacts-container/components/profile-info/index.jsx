@@ -30,7 +30,8 @@ const ProfileInfo = () => {
           <Avatar className="h-12 w-12  rounded-full overflow-hidden">
             {userInfo.image ? (
               <AvatarImage
-                src={`${HOST}/${userInfo.image}`}
+                // src={`${HOST}/${userInfo.image}`}
+                src={userInfo.image}
                 alt="profile"
                 className="object-cover w-full h-full bg-black"
               />
@@ -53,7 +54,7 @@ const ProfileInfo = () => {
           {userInfo.firstName && userInfo.lastName
             ? `${userInfo.firstName} ${userInfo.lastName}`
             : ""}
-        </div>
+        </div>0
       </div>
       <div className="flex gap-5">
         <TooltipProvider>

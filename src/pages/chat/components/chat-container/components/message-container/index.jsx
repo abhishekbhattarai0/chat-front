@@ -145,7 +145,7 @@ const MessageContainer = () => {
               }}
             >
             <img
-              src={`${HOST}/${message.fileUrl}`}
+              src={message.fileUrl}
               height={300}
               width={300}
             />
@@ -206,7 +206,8 @@ const renderChannelMessages = (message) => {
               }}
             >
             <img
-              src={`${HOST}/${message.fileUrl}`}
+              src={message.fileUrl}
+              // src={`${HOST}/${message.fileUrl}`}
               height={300}
               width={300}
             />
@@ -229,7 +230,8 @@ const renderChannelMessages = (message) => {
           <Avatar className="h-8 w-4  rounded-full overflow-hidden">
               {message.sender.image && (
                 <AvatarImage
-                  src={`${HOST}/${message.sender.image}`}
+                  src={message.sender.image}
+                  // src={`${HOST}/${message.sender.image}`}
                   alt="profile"
                   className="object-cover w-full h-full bg-black"
                 />
@@ -268,7 +270,8 @@ const renderChannelMessages = (message) => {
         <div className="fixed z-[1000] top-2 left-0 h-[100vh] w-[100vw] flex items-center backdrop-blur-lg justify-center ">
           <div>
             <img 
-              src={`${HOST}/${imageUrl}`}  
+              src={imageUrl}  
+              // src={`${HOST}/${imageUrl}`}  
               className="h-[80vh] w-full bg-cover "
             />
           </div>

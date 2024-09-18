@@ -1,4 +1,3 @@
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -59,35 +58,10 @@ const CreateChannel = () => {
         }
       }
     } catch (error) {
-      
+      console.log(error)
     }
   }
 
-  const selectNewContact = (contact) => {
-    setOpenContactModal(false);
-    setSelectedChatType("contact")
-    console.log("contact : ",contact)
-    setSelectedChatData(contact)
-    setSearchedContacts([]);
-  }
-  const searchContacts = async (searchTerm) => {
-    try {
-      if (searchTerm.length > 0) {
-        const response = await apiClient.post(
-          SEARCH_CONTACTS_ROUTES,
-          { searchTerm },
-          { withCredentials: true }
-        );
-        if (response.status === 200 && response.data.contacts) {
-          setSearchedContacts(response.data.contacts);
-        }
-      } else {
-        setSearchedContacts([]);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
   return (
     <>
       <TooltipProvider>

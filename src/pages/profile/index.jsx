@@ -26,8 +26,8 @@ const Profile = () => {
     setLastName(userInfo.lastName);
     setSelectedColor(userInfo.color)
     if(userInfo.image){
-      console.log(HOST,userInfo)
-      setImage(`${HOST}/${userInfo.image}`)
+      setImage(userInfo.image)
+      // setImage(`${HOST}/${userInfo.image}`)
     }
   },[userInfo])
   
