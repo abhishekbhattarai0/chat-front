@@ -8,6 +8,7 @@ import { IoMdArrowRoundDown } from 'react-icons/io'
 import { IoCloseSharp } from "react-icons/io5"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { getColor } from "@/lib/utils"
+import axios from "axios"
 
 const MessageContainer = () => {
   const scrollRef = useRef()
@@ -70,9 +71,9 @@ const MessageContainer = () => {
   }
 
   const downloadFile = async(fileUrl) => {
-    setIsDownloading(true);
+    setIsDownloading(false);
     setFileDownloadProgress(0);
-    const response = await apiClient.get(`${HOST}/${fileUrl}`,{
+    const response = await axios.get(fileUrl,{
       responseType: "blob",
       onDownloadProgress: (progressEvent) => {
         const { loaded, total } = progressEvent;
@@ -92,6 +93,9 @@ const MessageContainer = () => {
     window.URL.revokeObjectURL(urlBlob);
     setIsDownloading(false);
   }
+
+ 
+  
   const renderMessages = () => {
     let lastDate = null;
     return selectedChatMessage.map( (message, index) => {
