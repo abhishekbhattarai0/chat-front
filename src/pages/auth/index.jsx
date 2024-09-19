@@ -10,6 +10,38 @@ import { apiClient } from "@/lib/api-client";
 import { LOGIN_ROUTE, SIGNUP_ROUTE } from "@/utils/constants";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "@/store";
+import * as Yup from 'yup';
+
+
+
+// Yup validation schema for login
+const loginSchema = Yup.object().shape({
+  email: Yup.string().email("Invalid email format").required("Email is required"),
+  password: Yup.string()
+    .required("Password is required")
+    .min(8, "Password must be at least 8 characters")
+    .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .matches(/\d/, 'Password must contain at least one digit')
+    .matches(/[@$!%*?&]/, 'Password must contain at least one special character')
+});
+
+// Yup validation schema for signup
+const signupSchema = Yup.object().shape({
+  email: Yup.string().email("Invalid email format").required("Email is required"),
+  password: Yup.string()
+    .required("Password is required")
+    .min(8, "Password must be at least 8 characters")
+    .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .matches(/\d/, 'Password must contain at least one digit')
+    .matches(/[@$!%*?&]/, 'Password must contain at least one special character')
+  
+  ,
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password"), null], "Passwords must match")
+    .required("Confirm Password is required"),
+});
 
 const Auth = () => {
   const navigate = useNavigate()
@@ -18,55 +50,97 @@ const Auth = () => {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
 
-  const validateLogin = () => {
-    if(!email) {
-      toast.error("Email is required")
-      return false;
-    }
-    if(!password) {
-      toast.error("Password is required");
-      return false;
-    }
-    return true;
-  }
-  const validateSignup =()=> {
-    if( !email.length){
-      toast.error("Email is required.");
-      return false;
-    }
+  // const validateLogin = () => {
+  //   if(!email) {
+  //     toast.error("Email is required")
+  //     return false;
+  //   }
+  //   if(!password) {
+  //     toast.error("Password is required");
+  //     return false;
+  //   }
+  //   return true;
+  // }
 
-    if( !password.length){
-      toast.error("Password is required.");
-      return false;
-    }
-
-    if(password ===! confirmPassword){
-      toast.error("Password and confirm Password should match");
-      return false;
-    }
-    return true
+  const validateLogin = async () => {
+    await loginSchema.validate({email, password})
+    .then( () => {
+      return true
+    })
+    .catch((err)=>{
+      
+        toast.error(`${err.message}`)
+        return false
+    })
   }
 
-  const handleLogin = async () => {
-   if(validateLogin()){
-    console.log("hello")
-    const response = await apiClient.post(
-      LOGIN_ROUTE,
-      { email, password },
-      { withCredentials:true}
-    );
-    if(response.data.user.id){
-      setUserInfo(response.data.user)
-      if(response.data.user.profileSetup) navigate('/chat');
-      else navigate('/profile');
-    }    
+  const validateSignup = async()=> {
+    await signupSchema.validate({email,password,confirmPassword, })
+    .then( () => {
+      return true
+    })
+    .catch((err)=>{
+      console.log("true");
+      
+        toast.error(`${err.message}`)
+        return false
+    })
+  }
+
+  // const validateSignup =()=> {
+  //   if( !email.length){
+  //     toast.error("Email is required.");
+  //     return false;
+  //   }
+
+  //   if( !password.length){
+  //     toast.error("Password is required.");
+  //     return false;
+  //   }
+
+  //   if(password ===! confirmPassword){
+  //     toast.error("Password and confirm Password should match");
+  //     return false;
+  //   }
+  //   return true
+  // }
+
+  // const handleLogin = async () => {
+  //   if(validateLogin()){
+  //    console.log("hello")
+  //    const response = await apiClient.post(
+  //      LOGIN_ROUTE,
+  //      { email, password },
+  //      { withCredentials:true}
+  //    );
+  //    if(response.data.user.id){
+  //      setUserInfo(response.data.user)
+  //      if(response.data.user.profileSetup) navigate('/chat');
+  //      else navigate('/profile');
+  //    }    
+  //   }
+  //  }
+
+   const handleLogin = async () => {
+
+    if(validateLogin()){
+     const response = await apiClient.post(
+       LOGIN_ROUTE,
+       { email, password },
+       { withCredentials:true}
+     );
+     if(response.data.user.id){
+       setUserInfo(response.data.user)
+       if(response.data.user.profileSetup) navigate('/chat');
+       else navigate('/profile');
+     }    
+    }
    }
-  }
 
   const handleSignup = async () => {
     try {
       if(validateSignup()){
-        const response = await apiClient.post(SIGNUP_ROUTE,{email, password},{ withCredentials: true})
+    const response = await apiClient.post(SIGNUP_ROUTE,{email, password},{ withCredentials: true})
         console.log(response)
         if(response.status === 201){
       setUserInfo(response.data.user)
