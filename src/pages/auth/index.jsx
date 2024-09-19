@@ -11,6 +11,7 @@ import { LOGIN_ROUTE, SIGNUP_ROUTE } from "@/utils/constants";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "@/store";
 import * as Yup from 'yup';
+import { LoaderCircle, LoaderPinwheel } from "lucide-react";
 
 
 
@@ -49,6 +50,7 @@ const Auth = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
   // const validateLogin = () => {
   //   if(!email) {
@@ -63,28 +65,28 @@ const Auth = () => {
   // }
 
   const validateLogin = async () => {
-    await loginSchema.validate({email, password})
-    .then( () => {
-      return true
-    })
-    .catch((err)=>{
-      
-        toast.error(`${err.message}`)
+    try {
+      await loginSchema.validate({email, password});
+      return true;
+    } catch (error) {
+      toast.error(`${error.message}`)
+        console.log("false")
+
         return false
-    })
+    }
   }
 
   const validateSignup = async()=> {
-    await signupSchema.validate({email,password,confirmPassword, })
-    .then( () => {
-      return true
-    })
-    .catch((err)=>{
-      console.log("true");
-      
-        toast.error(`${err.message}`)
-        return false
-    })
+    try {
+      await signupSchema.validate({email,password,confirmPassword, })
+      .then( () => {
+        return true
+      })
+          
+    } catch (error) {
+      toast.error(`${error.message}`)
+      return false
+    }
   }
 
   // const validateSignup =()=> {
@@ -122,32 +124,41 @@ const Auth = () => {
   //  }
 
    const handleLogin = async () => {
-
-    if(validateLogin()){
-     const response = await apiClient.post(
-       LOGIN_ROUTE,
-       { email, password },
-       { withCredentials:true}
-     );
-     if(response.data.user.id){
-       setUserInfo(response.data.user)
-       if(response.data.user.profileSetup) navigate('/chat');
-       else navigate('/profile');
-     }    
+    
+    try {
+      if(await validateLogin()){
+        setIsLoading(true)
+        const response = await apiClient.post(
+         LOGIN_ROUTE,
+         { email, password },
+         { withCredentials:true}
+       );
+       if(response.data.user.id){
+         setUserInfo(response.data.user)
+         setIsLoading(false)
+         if(response.data.user.profileSetup) navigate('/chat');
+         else navigate('/profile');
+       }    
+      }
+    } catch (error) {
+      setIsLoading(false)
+      console.log(false)
     }
    }
 
   const handleSignup = async () => {
     try {
-      if(validateSignup()){
-    const response = await apiClient.post(SIGNUP_ROUTE,{email, password},{ withCredentials: true})
-        console.log(response)
-        if(response.status === 201){
+      if(await validateSignup()){
+        setIsLoading(true)
+      const response = await apiClient.post(SIGNUP_ROUTE,{email, password},{ withCredentials: true})
+      if(response.status === 201){
       setUserInfo(response.data.user)
+          setIsLoading(false)
           navigate('/profile')
         }
       }
     } catch (error) {
+      setIsLoading(false)
       console.log(error)
     }
   }
@@ -156,7 +167,7 @@ const Auth = () => {
       <div className="h-[80vh] bg-white border-2 border-white text-opacity-90 shadow-2xl w-[80vw] md:w-[90vw] lg:w-[70vw] xl:w-[60vw] rounded-3xl grid xl:grid-cols-2 ">
         <div className="flex items-center justify-center flex-col">
           <div className="flex items-center justify-center">
-            <h1 className="text-5xl font-bold md:text-6xl">Welcome</h1>
+            <h1 className="text-4xl font-bold md:text-6xl">Welcome</h1>
             <img src={Victory} alt="Victory Emoji" className="h-[100px]" />
           </div>
           <p className="font-medium text-center ">
@@ -193,7 +204,9 @@ const Auth = () => {
                 value={password}
                 onChange={(e)=> setPassword(e.target.value)}
               />
-              <Button className="rounded-full p-6" onClick={handleLogin}>Login</Button>
+              <Button className="rounded-full p-6" onClick={handleLogin}>
+              {!isLoading ? "Login" : <div className="animate-spin"><LoaderCircle/></div>}
+              </Button>
             </TabsContent>
             <TabsContent value="signup" className="flex flex-col gap-5 ">
             <Input
@@ -217,7 +230,9 @@ const Auth = () => {
                 value={confirmPassword}
                 onChange={(e)=> setConfirmPassword(e.target.value)}
               />
-              <Button className="rounded-full p-6" onClick={handleSignup}>Signup</Button>
+              <Button className="rounded-full p-6" onClick={handleSignup}>
+                {!isLoading ? "Signup" : <div className="animate-spin"><LoaderCircle/></div>}
+              </Button>
             </TabsContent>
           </Tabs>
         </div>
