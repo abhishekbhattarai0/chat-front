@@ -6,6 +6,7 @@ import { useAppStore } from './store'
 import { useEffect, useState } from 'react'
 import { apiClient } from './lib/api-client'
 import { GET_USER_INFO } from './utils/constants'
+import Loader from './lib/loading/loader'
 
 function PrivateRoute ({children}){
   const {userInfo} = useAppStore();
@@ -52,7 +53,7 @@ function App() {
   },[userInfo, setUserInfo])
 
   if(loading){
-    return <div>Loading ...</div>
+    return <div><Loader/></div>
   }
 
   return (
