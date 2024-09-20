@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { TooltipTrigger } from "@/components/ui/tooltip";
 import { apiClient } from "@/lib/api-client";
-import { animationDefaultOptions, getColor } from "@/lib/utils";
+import {  getColor } from "@/lib/utils";
 import { useAppStore } from "@/store";
 import { HOST, SEARCH_CONTACTS_ROUTES } from "@/utils/constants";
 import {
@@ -121,14 +121,9 @@ const NewDM = () => {
             </div>
           </ScrollArea>
           {searchedContacts.length <= 0 && (
-            <div className=" flex-1  md:flex flex-col justify-center items-center mt-5 duration-100 transition-all ">
-              <Lottie
-                isClickToPauseDisabled={true}
-                height={100}
-                width={100}
-                options={animationDefaultOptions}
-              />
-              <div className="text-opacity-80 text-white flex flex-col gap-5 items-center mt-5 lg:text-2xl text-xl transition-all duration-300 text-center">
+            <div className="      duration-100 transition-all ">
+             
+              <div className="text-opacity-80 text-white flex flex-col items-center  lg:text-2xl text-xl transition-all duration-300 ">
                 <h3 className="poppins-medium">
                   Hi<span className="text-purple-500">!</span> Search new
                   <span className="text-purple-500"> Contacts </span>
