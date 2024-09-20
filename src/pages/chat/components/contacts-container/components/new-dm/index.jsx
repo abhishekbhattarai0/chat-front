@@ -6,6 +6,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { useDebounce } from "@/components/ui/multipleSelect";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { TooltipTrigger } from "@/components/ui/tooltip";
 import { apiClient } from "@/lib/api-client";
@@ -17,7 +18,7 @@ import {
   TooltipContent,
   TooltipProvider,
 } from "@radix-ui/react-tooltip";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import Lottie from "react-lottie";
 
@@ -25,6 +26,8 @@ const NewDM = () => {
   const { setSelectedChatType, setSelectedChatData } = useAppStore();
   const [openNewContactModal, setOpenContactModal] = useState(false);
   const [searchedContacts, setSearchedContacts] = useState([]);
+  const [search, setSearch] = useState('')
+  const debounceSearch = useDebounce(search);
 
   const selectNewContact = (contact) => {
     setOpenContactModal(false);
@@ -33,24 +36,46 @@ const NewDM = () => {
     setSelectedChatData(contact)
     setSearchedContacts([]);
   }
-  const searchContacts = async (searchTerm) => {
-    try {
-      if (searchTerm.length > 0) {
-        const response = await apiClient.post(
-          SEARCH_CONTACTS_ROUTES,
-          { searchTerm },
-          { withCredentials: true }
-        );
-        if (response.status === 200 && response.data.contacts) {
-          setSearchedContacts(response.data.contacts);
+  // const searchContacts = async (searchTerm) => {
+  //   try {
+  //     if (searchTerm.length > 0) {
+  //       const response = await apiClient.post(
+  //         SEARCH_CONTACTS_ROUTES,
+  //         { searchTerm },
+  //         { withCredentials: true }
+  //       );
+  //       if (response.status === 200 && response.data.contacts) {
+  //         setSearchedContacts(response.data.contacts);
+  //       }
+  //     } else {
+  //       setSearchedContacts([]);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  useEffect(()=>{
+    const searchContacts = async () => {
+      try {
+        if(search.length > 0){
+          const response = await apiClient.post(
+            SEARCH_CONTACTS_ROUTES,
+            {searchTerm:debounceSearch},
+            {withCredentials:true}
+          );
+          if(response.status === 200 && response.data.contacts){
+            setSearchedContacts(response.data.contacts);
+          }else{
+            setSearchedContacts([]);
+          }
         }
-      } else {
-        setSearchedContacts([]);
+      } catch (error) {
+        console.log(error)
       }
-    } catch (error) {
-      console.log(error);
     }
-  };
+    searchContacts()
+  },[debounceSearch])
   return (
     <>
       <TooltipProvider>
@@ -75,7 +100,8 @@ const NewDM = () => {
             <Input
               placeholder="Search Contacts"
               className="rounded-lg p-6 bg-[#2c2e3b] border-none"
-              onChange={(e) => searchContacts(e.target.value)}
+              // onChange={(e) => searchContacts(e.target.value)}
+              onChange={e => setSearch(e.target.value)}
             />
           </div>
           <ScrollArea className="h-[250px]">

@@ -1,7 +1,5 @@
 import { useAppStore } from '@/store'
-import React from 'react'
 import { Avatar, AvatarImage } from './ui/avatar';
-import { HOST } from '@/utils/constants';
 import { getColor } from '@/lib/utils';
 
 const ContactList = ({ contacts , isChannel = false }) => {
