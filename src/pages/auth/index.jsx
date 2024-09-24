@@ -79,9 +79,9 @@ const Auth = () => {
   const validateSignup = async()=> {
     try {
       await signupSchema.validate({email,password,confirmPassword, })
-      .then( () => {
+      
         return true
-      })
+     
           
     } catch (error) {
       toast.error(`${error.message}`)
@@ -148,6 +148,7 @@ const Auth = () => {
 
   const handleSignup = async () => {
     try {
+      console.log(await validateSignup())
       if(await validateSignup()){
         setIsLoading(true)
       const response = await apiClient.post(SIGNUP_ROUTE,{email, password},{ withCredentials: true})
